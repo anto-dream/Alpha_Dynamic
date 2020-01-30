@@ -1,77 +1,111 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dyn_render/bloc/blocBase.dart';
 import 'package:flutter_dyn_render/constants.dart';
+import 'package:flutter_dyn_render/widgets/custom.dart';
+import 'package:flutter_dyn_render/widgets/expandable_controller.dart';
 
 import 'models/ui_data.dart';
 
-class WidgetGenerator {
+class WidgetGenerator<T> {
   static Map<int, String> quantities = {};
 
-  /*static Widget generateWidget(UiData data) {
+  static Widget generateWidget(BlocBase bloc, FieldConfiguration data) {
     Widget widget;
-    switch (data.payload.data[0].fieldConfiguration[0].displayGroups[0].type) {
-      case TypeConstants.TEXT_VIEW:
-        widget = generateTextView(data);
+    switch (data.displayGroups[0].fields[0].controlType) {
+      case TypeConstants.TEXT_BOX:
+        widget = generateTextBox(data, bloc);
         break;
-      case TypeConstants.TEXT_FIELD:
-        widget = generateTextField(data);
+      case TypeConstants.MULTI_SELECT:
+        widget = AutoCompleteTextField(data, bloc);
         break;
-      case TypeConstants.TEXT_FIELD:
-        widget = generateTextField(data);
+      case TypeConstants.SINGLE_SELECT:
+        widget = generateTextBox(data, bloc);
         break;
-      case TypeConstants.FLAT_BUTTON:
-        widget = generateFlatButton(data);
+      case TypeConstants.CURRENCY:
+        widget = Container();
         break;
-      case TypeConstants.ROW:
-        generateRow(data);
+      case TypeConstants.SECURITY_SEARCH:
+        widget = Container();
         break;
-      case TypeConstants.CHECK_BOX:
-        widget = CustomCheckBoxTile(data);
+      case TypeConstants.BROKER_ACCOUNT_SEARCH:
+        widget = Container();
         break;
       case TypeConstants.RADIO_BUTTON:
-        widget = CustomRadiobutton(data);
+        widget = Container();
         break;
-      case TypeConstants.DROP_DOWN:
-        widget = DropDown(data);
+      case TypeConstants.TOGGLE_BUTTON:
+        widget = Container();
+        break;
+      case TypeConstants.DATE_PICKER:
+        widget = Container();
+        break;
+      case TypeConstants.TEXT_AREA:
+        widget = Container();
+        break;
+      case TypeConstants.INSTRUCTIONAL:
+        widget = Container();
+        break;
+      case TypeConstants.CHECKBOX:
+        widget = Container();
+        break;
+      case TypeConstants.FILE_UPLOAD:
+        widget = Container();
         break;
       default:
-        widget = CircularProgressIndicator();
+        widget = Container();
         break;
     }
-    return widget;
-  }
-
-  static Widget generateTextView(UiData dataItem) {
-    return Text(
-      dataItem.displayGroups[0].fields[0].label,
-      style: TextStyle(fontSize: 20),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: widget,
     );
   }
 
-  static Widget generateTextField(UiModel dataItem) {
-    return TextField(
-        onChanged: (value) {
-          updateFormData(dataItem, value);
-        },
-       *//* decoration: new InputDecoration(
-            labelText: dataItem.title, hintText: dataItem.data.displayName)*//*);
+  static Widget generateTextBox(FieldConfiguration dataItem, BlocBase bloc) {
+    var field = dataItem.displayGroups[0].fields[0];
+    var textField = TextField(
+        enabled: true,
+        decoration: InputDecoration(
+          labelText: field.label,
+          hintText: field.placeholder,
+          border: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepPurple)),
+        ));
+    print("dataOrder ${dataItem.order}");
+    if (dataItem.order % 1 == 0) {
+      return textField;
+    } else {
+      return ExpandableControllerWidget(textField, dataItem, bloc: bloc);
+    }
   }
 
-  static void updateFormData(UiModel dataItem, String value) {
-    *//*quantities.update(dataItem.id, (val) {
+  static Widget generateTextField(FieldConfiguration dataItem) {
+    return TextField(
+        enabled: true,
+        decoration: InputDecoration(
+          labelText: 'tet',
+          hintText: "An Outline Border TextField",
+          border: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepPurple)),
+        ));
+  }
+
+  static void updateFormData(FieldConfiguration dataItem, String value) {
+    /*quantities.update(dataItem.id, (val) {
       print('val $val');
       return value;
     }, ifAbsent: () {
       print("absent");
       return value;
-    });*//*
+    });*/
   }
 
-  static Widget generateFlatButton(UiModel data) {
+  static Widget generateFlatButton(FieldConfiguration data) {
     return FlatButton();
   }
 
-  static void generateRow(UiModel data) {}
+  static void generateRow(FieldConfiguration data) {}
 
   static void printData() {
     print(quantities);
@@ -79,7 +113,7 @@ class WidgetGenerator {
 }
 
 class CustomCheckBoxTile extends StatefulWidget {
-  final UiModel dataItem;
+  final FieldConfiguration dataItem;
 
   CustomCheckBoxTile(this.dataItem);
 
@@ -96,7 +130,6 @@ class _CustomCheckBoxTileState extends State<CustomCheckBoxTile> {
       onChanged: (bool value) {
         setState(() {
           WidgetGenerator.updateFormData(widget.dataItem, value.toString());
-
         });
       },
     );
@@ -104,7 +137,7 @@ class _CustomCheckBoxTileState extends State<CustomCheckBoxTile> {
 }
 
 class CustomRadiobutton extends StatefulWidget {
-  final UiModel data;
+  final FieldConfiguration data;
 
   CustomRadiobutton(this.data);
 
@@ -161,38 +194,58 @@ class _CustomRadiobuttonState extends State<CustomRadiobutton> {
 }
 
 class DropDown extends StatefulWidget {
-  UiModel dataItem;
-
-  DropDown(this.dataItem);
+  DropDown();
 
   @override
   DropDownWidget createState() => DropDownWidget();
 }
 
 class DropDownWidget extends State {
+  var _currencies = [
+    "Food",
+    "Transport",
+    "Personal",
+    "Shopping",
+    "Medical",
+    "Rent",
+    "Movie",
+    "Salary"
+  ];
   String dropdownValue = 'One';
-
+  var _currentSelectedValue;
   List<String> spinnerItems = ['One', 'Two', 'Three', 'Four', 'Five'];
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: Icon(Icons.arrow_drop_down),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.red, fontSize: 18),
-      onChanged: (String data) {
-        setState(() {
-          dropdownValue = data;
-        });
-      },
-      items: spinnerItems.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+              errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+              hintText: 'Please select expense',
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+          isEmpty: _currentSelectedValue == '',
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: _currentSelectedValue,
+              isDense: true,
+              onChanged: (String newValue) {
+                setState(() {
+                  _currentSelectedValue = newValue;
+                  state.didChange(newValue);
+                });
+              },
+              items: _currencies.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
         );
-      }).toList(),
+      },
     );
-  }*/
+  }
 }

@@ -318,7 +318,7 @@ class DisplayGroupField {
 
 class Option {
   String value;
-  Display display;
+  String display;
 
   Option({
     this.value,
@@ -327,22 +327,22 @@ class Option {
 
   factory Option.fromJson(Map<String, dynamic> json) => Option(
     value: json["value"],
-    display: displayValues.map[json["display"]],
+    display: json["display"],
   );
 
   Map<String, dynamic> toJson() => {
     "value": value,
-    "display": displayValues.reverse[display],
+    "display": display,
   };
 }
 
-enum Display { YES, NO, MAY_BE }
+/*enum Display { YES, NO, MAY_BE }
 
 final displayValues = EnumValues({
   "May be": Display.MAY_BE,
   "No": Display.NO,
   "Yes": Display.YES
-});
+});*/
 
 class Status {
   int value;

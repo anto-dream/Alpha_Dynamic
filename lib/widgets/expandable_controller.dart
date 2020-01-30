@@ -39,11 +39,11 @@ class _ExpandableControllerWidgetState extends State<ExpandableControllerWidget>
   void prepareAnimations() {
     expandController = AnimationController(
         vsync: this,
-        reverseDuration: Duration(milliseconds: 100),
-        duration: Duration(milliseconds: 500));
+        reverseDuration: Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 800));
     animation = CurvedAnimation(
       parent: expandController,
-      curve: Curves.easeInOut,
+      curve: Curves.easeInOutBack,
     );
   }
 
@@ -71,7 +71,7 @@ class _ExpandableControllerWidgetState extends State<ExpandableControllerWidget>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           SizeTransition(sizeFactor: animation, child: Padding(
-            padding: const EdgeInsets.all(3.0),
+            padding: const EdgeInsets.all(11.0),
             child: widget.child,
           )),
         ],

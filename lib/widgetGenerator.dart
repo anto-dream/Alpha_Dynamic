@@ -56,8 +56,9 @@ class WidgetGenerator<T> {
         widget = Container();
         break;
     }
+    final double padding = (data.order % 1 == 0) ? 8.0 : 0.0;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(padding),
       child: widget,
     );
   }

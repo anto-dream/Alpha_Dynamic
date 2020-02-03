@@ -81,14 +81,12 @@ class WidgetGenerator<T> {
     }
   }
 
-  static Widget generateTextField(FieldConfiguration dataItem) {
+  static Widget generateSingleSelectField(FieldConfiguration dataItem) {
+    var field = dataItem.displayGroups[0].fields[0];
     return TextField(
-        enabled: true,
         decoration: InputDecoration(
-          labelText: 'tet',
-          hintText: "An Outline Border TextField",
-          border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.deepPurple)),
+            labelText: field.label,
+            hintText: field.placeholder,
         ));
   }
 

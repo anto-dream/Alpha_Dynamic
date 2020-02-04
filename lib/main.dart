@@ -3,9 +3,12 @@ import 'package:flutter_dyn_render/assets/uidata.dart';
 import 'package:flutter_dyn_render/bloc/home_bloc.dart';
 import 'package:flutter_dyn_render/bloc/inheritedWidget.dart';
 import 'package:flutter_dyn_render/models/event.dart';
+import 'package:flutter_dyn_render/models/navigation.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 import 'package:flutter_dyn_render/widgetGenerator.dart';
-import 'package:flutter_dyn_render/widgets/search_page.dart';
+import 'package:flutter_dyn_render/widgets/default_search_page.dart';
+
+import 'constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,14 +49,15 @@ class _MyHomePageState1 extends State<MyHomePage1> {
         body: FutureBuilder<String>(
             future: UiResponse().loadAsset(),
             builder: (context, snapshot) {
-             // print("snapshot data ${snapshot.data}");
+              // print("snapshot data ${snapshot.data}");
               if (snapshot != null && snapshot.data != null) {
                 UiData widgetData = uiDataFromJson(snapshot.data);
                 return Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: ListView.builder(
                     itemBuilder: (BuildContext ctx, int index) {
-                      return WidgetGenerator.generateWidget(bloc, widgetData.payload.data[0].fieldConfiguration[index]);
+                      return WidgetGenerator.generateWidget(bloc,
+                          widgetData.payload.data[0].fieldConfiguration[index]);
                     },
                     itemCount:
                         widgetData.payload.data[0].fieldConfiguration.length,
@@ -85,9 +89,24 @@ class _MyHomePageState1 extends State<MyHomePage1> {
   void initialiseListeners() {
     bloc.navigationEvents.listen((RxEvent event) {
       if (event.type == RxConstants.SCREEN_NAVIGATION) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SearchPage()));
+        var routePage;
+        switch (event.data.displayGroups[0].fields[0].controlType) {
+          case TypeConstants.SINGLE_SELECT:
+            routePage = DefaultSearchPage(event.data);
+            break;
+        }
+        launch(routePage);
       }
     });
+  }
+
+  void launch(Widget routePage) async {
+    RouteData result = await Navigator.of(context)
+        .push<RouteData>(MaterialPageRoute(builder: (ctx) => routePage));
+    if (result != null) {
+      bloc.dataUpdater.add(RxEvent(RxConstants.DATA_UPDATE,
+          data: result.fieldConfiguration, widgetData: result.dataOpted));
+    }
   }
 
   @override

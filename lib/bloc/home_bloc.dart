@@ -5,12 +5,18 @@ import 'package:rxdart/rxdart.dart';
 class HomeBloc extends BlocBase {
   BehaviorSubject<RxEvent> subject = BehaviorSubject();
   BehaviorSubject<RxEvent> _navigationEvents = BehaviorSubject();
+  BehaviorSubject<RxEvent> _dataUpdater = BehaviorSubject();
 
   @override
   void dispose() {
     subject.close();
     _navigationEvents.close();
+    _dataUpdater.close();
   }
 
   BehaviorSubject<RxEvent> get navigationEvents => _navigationEvents;
+
+  BehaviorSubject<RxEvent> get dataUpdater => _dataUpdater;
+
+
 }

@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dyn_render/bloc/blocBase.dart';
 import 'package:flutter_dyn_render/constants.dart';
 import 'package:flutter_dyn_render/widgets/auto_complete_input_chip.dart';
+import 'package:flutter_dyn_render/widgets/custom_text_field.dart';
 import 'package:flutter_dyn_render/widgets/expandable_controller.dart';
 import 'package:flutter_dyn_render/widgets/single_select_chip_input.dart';
 
@@ -21,7 +24,7 @@ class WidgetGenerator<T> {
         widget = AutoCompleteTextField(data, bloc);
         break;
       case TypeConstants.SINGLE_SELECT:
-        widget = SingleSelectChipInputField(data, bloc);
+        widget = TappableTextField(data, bloc);
         break;
       case TypeConstants.CURRENCY:
         widget = Container();
@@ -58,9 +61,10 @@ class WidgetGenerator<T> {
         break;
     }
     final double padding = (data.order % 1 == 0) ? 8.0 : 0.0;
+    final bool expand = data.order % 1 == 0;
     return Padding(
       padding: EdgeInsets.all(padding),
-      child: widget,
+      child: !expand ? ExpandableControllerWidget(widget, data, bloc: bloc) : widget
     );
   }
 
@@ -75,11 +79,7 @@ class WidgetGenerator<T> {
               borderSide: BorderSide(color: Colors.deepPurple)),
         ));
     print("dataOrder ${dataItem.order}");
-    if (dataItem.order % 1 == 0) {
-      return textField;
-    } else {
-      return ExpandableControllerWidget(textField, dataItem, bloc: bloc);
-    }
+    return textField;
   }
 
   static Widget generateSingleSelectField(FieldConfiguration dataItem) {

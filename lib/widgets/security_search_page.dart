@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-class SearchPage extends StatefulWidget {
+class SecuritySearchPage extends StatefulWidget {
   @override
-  _SearchPageState createState() => _SearchPageState();
+  _SecuritySearchPageState createState() => _SecuritySearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SecuritySearchPageState extends State<SecuritySearchPage> {
   var _searchEdit = new TextEditingController();
   PublishSubject<String> _publishSubject = PublishSubject();
 

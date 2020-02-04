@@ -19,4 +19,5 @@ class RxEvent {
 class RxConstants {
   static const int MULTI_SELECTION = 1;
   static const int MULTI_SELECTION_DELETION =2;
+  static const int SCREEN_NAVIGATION = 3;
 }

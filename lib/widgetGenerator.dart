@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dyn_render/bloc/blocBase.dart';
 import 'package:flutter_dyn_render/constants.dart';
-import 'package:flutter_dyn_render/widgets/custom.dart';
+import 'package:flutter_dyn_render/widgets/auto_complete_input_chip.dart';
 import 'package:flutter_dyn_render/widgets/expandable_controller.dart';
+import 'package:flutter_dyn_render/widgets/single_select_chip_input.dart';
 
 import 'models/ui_data.dart';
 
@@ -20,7 +21,7 @@ class WidgetGenerator<T> {
         widget = AutoCompleteTextField(data, bloc);
         break;
       case TypeConstants.SINGLE_SELECT:
-        widget = generateTextBox(data, bloc);
+        widget = SingleSelectChipInputField(data, bloc);
         break;
       case TypeConstants.CURRENCY:
         widget = Container();

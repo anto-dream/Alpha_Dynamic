@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dyn_render/assets/uidata.dart';
 import 'package:flutter_dyn_render/bloc/home_bloc.dart';
 import 'package:flutter_dyn_render/bloc/inheritedWidget.dart';
+import 'package:flutter_dyn_render/models/event.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 import 'package:flutter_dyn_render/widgetGenerator.dart';
+import 'package:flutter_dyn_render/widgets/search_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -72,6 +74,26 @@ class _MyHomePageState1 extends State<MyHomePage1> {
       ),
       bloc: bloc,
     );
+  }
+
+  @override
+  void initState() {
+    initialiseListeners();
+    super.initState();
+  }
+
+  void initialiseListeners() {
+    bloc.navigationEvents.listen((RxEvent event) {
+      if (event.type == RxConstants.SCREEN_NAVIGATION) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SearchPage()));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 }
 

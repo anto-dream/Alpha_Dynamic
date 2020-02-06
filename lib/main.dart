@@ -7,6 +7,7 @@ import 'package:flutter_dyn_render/models/navigation.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 import 'package:flutter_dyn_render/widgetGenerator.dart';
 import 'package:flutter_dyn_render/widgets/default_search_page.dart';
+import 'package:flutter_dyn_render/widgets/multiselect_chip_select_search.dart';
 
 import 'constants.dart';
 
@@ -94,6 +95,9 @@ class _MyHomePageState1 extends State<MyHomePage1> {
           case TypeConstants.SINGLE_SELECT:
             routePage = DefaultSearchPage(event.data);
             break;
+          case TypeConstants.MULTI_SELECT:
+            routePage = MultiSelectChipSearchPage(event.data);
+            break;
         }
         launch(routePage);
       }
@@ -104,8 +108,17 @@ class _MyHomePageState1 extends State<MyHomePage1> {
     RouteData result = await Navigator.of(context)
         .push<RouteData>(MaterialPageRoute(builder: (ctx) => routePage));
     if (result != null) {
-      bloc.dataUpdater.add(RxEvent(RxConstants.DATA_UPDATE,
-          data: result.fieldConfiguration, widgetData: result.dataOpted));
+      switch (result.fieldConfiguration.displayGroups[0].fields[0].controlType) {
+        case TypeConstants.SINGLE_SELECT:
+          bloc.dataUpdater.add(RxEvent(RxConstants.DATA_UPDATE,
+              data: result.fieldConfiguration, widgetData: result.dataOpted));
+          break;
+        case TypeConstants.MULTI_SELECT:
+          print("popoed");
+          bloc.dataUpdater.add(RxEvent(RxConstants.DATA_UPDATE,
+              data: result.fieldConfiguration, widgetData: result.dataOpted));
+          break;
+      }
     }
   }
 

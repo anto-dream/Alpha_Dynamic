@@ -64,7 +64,6 @@ class _ExpandableControllerWidgetState extends State<ExpandableControllerWidget>
 
   @override
   Widget build(BuildContext context) {
-    print("build called");
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

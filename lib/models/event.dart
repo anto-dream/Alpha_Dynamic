@@ -6,7 +6,7 @@ class RxEvent {
   List<Option> options;
   Option option;
   //widget data in case of update
-  List<String> widgetData;
+  List<Object> widgetData;
 
   RxEvent(this.type, {this.data, this.options, this.option, this.widgetData});
 

@@ -1,13 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dyn_render/bloc/blocBase.dart';
+import 'package:flutter_dyn_render/bloc/home_bloc.dart';
 import 'package:flutter_dyn_render/constants.dart';
-import 'package:flutter_dyn_render/widgets/auto_complete_input_chip.dart';
+import 'package:flutter_dyn_render/models/event.dart';
+import 'package:flutter_dyn_render/widgets/custom_chip_input_field.dart';
 import 'package:flutter_dyn_render/widgets/custom_text_field.dart';
 import 'package:flutter_dyn_render/widgets/expandable_controller.dart';
-import 'package:flutter_dyn_render/widgets/single_select_chip_input.dart';
 
 import 'models/ui_data.dart';
 
@@ -21,7 +20,7 @@ class WidgetGenerator<T> {
         widget = generateTextBox(data, bloc);
         break;
       case TypeConstants.MULTI_SELECT:
-        widget = AutoCompleteTextField(data, bloc);
+        widget = MultiSelectChipField(data, bloc);
         break;
       case TypeConstants.SINGLE_SELECT:
         widget = TappableTextField(data, bloc);
@@ -63,9 +62,10 @@ class WidgetGenerator<T> {
     final double padding = (data.order % 1 == 0) ? 8.0 : 0.0;
     final bool expand = data.order % 1 == 0;
     return Padding(
-      padding: EdgeInsets.all(padding),
-      child: !expand ? ExpandableControllerWidget(widget, data, bloc: bloc) : widget
-    );
+        padding: EdgeInsets.all(padding),
+        child: !expand
+            ? ExpandableControllerWidget(widget, data, bloc: bloc)
+            : widget);
   }
 
   static Widget generateTextBox(FieldConfiguration dataItem, BlocBase bloc) {
@@ -82,15 +82,6 @@ class WidgetGenerator<T> {
     return textField;
   }
 
-  static Widget generateSingleSelectField(FieldConfiguration dataItem) {
-    var field = dataItem.displayGroups[0].fields[0];
-    return TextField(
-        decoration: InputDecoration(
-            labelText: field.label,
-            hintText: field.placeholder,
-        ));
-  }
-
   static void updateFormData(FieldConfiguration dataItem, String value) {
     /*quantities.update(dataItem.id, (val) {
       print('val $val');
@@ -101,14 +92,68 @@ class WidgetGenerator<T> {
     });*/
   }
 
-  static Widget generateFlatButton(FieldConfiguration data) {
-    return FlatButton();
-  }
-
-  static void generateRow(FieldConfiguration data) {}
-
   static void printData() {
     print(quantities);
+  }
+}
+
+class MultiSelectChipField extends StatefulWidget {
+  FieldConfiguration fieldConfiguration;
+  HomeBloc homeBloc;
+
+  MultiSelectChipField(this.fieldConfiguration, BlocBase bloc) {
+    homeBloc = bloc as HomeBloc;
+  }
+
+  @override
+  _MultiSelectChipFieldState createState() => _MultiSelectChipFieldState();
+}
+
+class _MultiSelectChipFieldState extends State<MultiSelectChipField> {
+  Set<Option> inputChips = Set();
+  @override
+  void initState() {
+    super.initState();
+    initListeners();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var field = widget.fieldConfiguration.displayGroups[0].fields[0];
+    print('build ${inputChips.length}');
+    return CustomChipInput<Option>(
+      chips: inputChips,
+        onTapped: () {
+          if (widget.homeBloc is HomeBloc) {
+            HomeBloc homeBloc = widget.homeBloc as HomeBloc;
+            homeBloc.navigationEvents.add(
+                RxEvent(RxConstants.SCREEN_NAVIGATION, data: widget.fieldConfiguration));
+          }
+        },
+        label: field.label,
+        chipsBuilder: (context, state, option) {
+          return InputChip(
+            key: ObjectKey(option),
+            label: Text(option.display),
+            onDeleted: () => state.deleteChip(option),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          );
+        });
+  }
+
+  void initListeners() {
+    widget.homeBloc.dataUpdater.listen((RxEvent event) {
+      if (event.type == RxConstants.DATA_UPDATE) {
+        if (event.data.displayGroups[0].fields[0].formFieldId ==
+            widget.fieldConfiguration.displayGroups[0].fields[0].formFieldId) {
+          event.widgetData.forEach((val) {
+            setState(() {
+              inputChips.add(val);
+            });
+          });
+        }
+      }
+    });
   }
 }
 
@@ -190,62 +235,5 @@ class _CustomRadiobuttonState extends State<CustomRadiobutton> {
       _radioValue1 = value;
       WidgetGenerator.updateFormData(widget.data, value);
     });
-  }
-}
-
-class DropDown extends StatefulWidget {
-  DropDown();
-
-  @override
-  DropDownWidget createState() => DropDownWidget();
-}
-
-class DropDownWidget extends State {
-  var _currencies = [
-    "Food",
-    "Transport",
-    "Personal",
-    "Shopping",
-    "Medical",
-    "Rent",
-    "Movie",
-    "Salary"
-  ];
-  String dropdownValue = 'One';
-  var _currentSelectedValue;
-  List<String> spinnerItems = ['One', 'Two', 'Three', 'Four', 'Five'];
-
-  @override
-  Widget build(BuildContext context) {
-    return FormField<String>(
-      builder: (FormFieldState<String> state) {
-        return InputDecorator(
-          decoration: InputDecoration(
-              errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
-              hintText: 'Please select expense',
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-          isEmpty: _currentSelectedValue == '',
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: _currentSelectedValue,
-              isDense: true,
-              onChanged: (String newValue) {
-                setState(() {
-                  _currentSelectedValue = newValue;
-                  state.didChange(newValue);
-                });
-              },
-              items: _currencies.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
   }
 }

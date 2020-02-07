@@ -69,10 +69,12 @@ class _ExpandableControllerWidgetState extends State<ExpandableControllerWidget>
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SizeTransition(sizeFactor: animation, child: Padding(
-            padding: const EdgeInsets.all(11.0),
-            child: widget.child,
-          )),
+          SizeTransition(
+              sizeFactor: animation,
+              child: Padding(
+                padding: const EdgeInsets.all(11.0),
+                child: widget.child,
+              )),
         ],
       ),
     );
@@ -81,15 +83,18 @@ class _ExpandableControllerWidgetState extends State<ExpandableControllerWidget>
   void initialiseListeners() {
     if (widget.bloc is HomeBloc) {
       HomeBloc homeBloc = widget.bloc as HomeBloc;
-      homeBloc.subject.listen((RxEvent event) {
-        if (event.type == RxConstants.MULTI_SELECTION) {
-          print(" event received ${event.options.length}  -- ${event.type}");
-          event.options.forEach((Option option) {
-            if (option.value ==
-                widget.dataItem.conditionals[0].fields[0].value) {
-              setState(() {
-                expandController.forward();
-              });
+      homeBloc.dataUpdater.listen((RxEvent event) {
+        if (event.type == RxConstants.DATA_UPDATE) {
+          print(" event received ${event.widgetData.length}  -- ${event.type}");
+
+          event.widgetData.forEach((val) {
+            if (val is Option) {
+              if (val.value ==
+                  widget.dataItem.conditionals[0].fields[0].value) {
+                setState(() {
+                  expandController.forward();
+                });
+              }
             }
           });
         } else if (event.type == RxConstants.MULTI_SELECTION_DELETION) {

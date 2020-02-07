@@ -57,15 +57,15 @@ class AutoCompleteTextField<T> extends StatelessWidget {
       HomeBloc homeBloc = bloc as HomeBloc;
       var rxEvent =
           RxEvent(RxConstants.MULTI_SELECTION_DELETION, option: option);
-      homeBloc.subject.add(rxEvent);
+      homeBloc.dataUpdater.add(rxEvent);
     }
   }
 
   void sendSelectionEvent(List<Option> data) {
     if (bloc is HomeBloc) {
       HomeBloc homeBloc = bloc as HomeBloc;
-      var rxEvent = RxEvent(RxConstants.MULTI_SELECTION, options: data);
-      homeBloc.subject.add(rxEvent);
+      var rxEvent = RxEvent(RxConstants.DATA_UPDATE, widgetData: data);
+      homeBloc.dataUpdater.add(rxEvent);
     }
   }
 

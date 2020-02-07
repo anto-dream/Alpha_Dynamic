@@ -99,6 +99,8 @@ class _MyHomePageState1 extends State<MyHomePage1> {
             routePage = MultiSelectChipSearchPage(event.data);
             break;
         }
+        //Dismiss keyboard
+        FocusScope.of(context).requestFocus(new FocusNode());
         launch(routePage);
       }
     });

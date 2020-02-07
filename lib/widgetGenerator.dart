@@ -135,7 +135,10 @@ class _MultiSelectChipFieldState extends State<MultiSelectChipField> {
           return InputChip(
             key: ObjectKey(option),
             label: Text(option.display),
-            onDeleted: () => state.deleteChip(option),
+            onDeleted: () {
+              state.deleteChip(option);
+              sendDeletionEvent(option);
+            },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           );
         });
@@ -155,6 +158,13 @@ class _MultiSelectChipFieldState extends State<MultiSelectChipField> {
       }
     });
   }
+
+  void sendDeletionEvent(Option option) {
+      var rxEvent =
+      RxEvent(RxConstants.MULTI_SELECTION_DELETION, option: option);
+      widget.homeBloc.dataUpdater.add(rxEvent);
+    }
+
 }
 
 class CustomCheckBoxTile extends StatefulWidget {

@@ -5,6 +5,7 @@ import 'package:flutter_dyn_render/models/event.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 import 'package:rxdart/rxdart.dart';
 
+///controller which can expand on sending event
 class ExpandableControllerWidget extends StatefulWidget {
   final bool expand = false;
   final Widget child;

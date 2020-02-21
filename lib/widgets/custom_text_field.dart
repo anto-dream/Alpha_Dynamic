@@ -4,6 +4,7 @@ import 'package:flutter_dyn_render/bloc/home_bloc.dart';
 import 'package:flutter_dyn_render/models/event.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 
+///Textfield where you can't enter but tap
 class TappableTextField extends StatefulWidget {
   FieldConfiguration fieldConfiguration;
   HomeBloc _bloc;

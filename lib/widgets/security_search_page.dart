@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+///Search page -- not needed
 class SecuritySearchPage extends StatefulWidget {
   @override
   _SecuritySearchPageState createState() => _SecuritySearchPageState();

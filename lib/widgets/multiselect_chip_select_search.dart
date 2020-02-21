@@ -4,6 +4,7 @@ import 'package:flutter_chips_input/flutter_chips_input.dart';
 import 'package:flutter_dyn_render/models/navigation.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 
+///search page with multiple chip selection
 class MultiSelectChipSearchPage extends StatelessWidget {
   FieldConfiguration fieldConf;
   List<Option> mockResults = List();

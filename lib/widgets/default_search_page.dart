@@ -3,6 +3,7 @@ import 'package:flutter_dyn_render/models/navigation.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 import 'package:rxdart/rxdart.dart';
 
+//single selction with refined list -- not needed
 class DefaultSearchPage<T> extends StatefulWidget {
   FieldConfiguration fieldConfiguration;
 

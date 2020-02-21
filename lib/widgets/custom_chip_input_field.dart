@@ -4,7 +4,7 @@ import 'package:flutter_dyn_render/bloc/blocBase.dart';
 typedef Tapped<T> = void Function();
 typedef ChipsBuilder<T> = Widget Function(
     BuildContext context, _CustomChipInputState<T> state, T data);
-
+///class on tap go to search page, on coming back will load multiple chips
 class CustomChipInput<T> extends StatefulWidget {
   final String label;
   final Tapped<T> onTapped;

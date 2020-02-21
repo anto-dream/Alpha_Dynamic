@@ -4,6 +4,7 @@ import 'package:flutter_dyn_render/bloc/home_bloc.dart';
 import 'package:flutter_dyn_render/models/event.dart';
 import 'package:flutter_dyn_render/models/ui_data.dart';
 
+//library -- with autocomlete search
 class AutoCompleteTextField<T> extends StatelessWidget {
   List<Option> mockResults = List<Option>();
   FieldConfiguration fieldData;
